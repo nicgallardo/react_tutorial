@@ -66,6 +66,15 @@
 	var compression = __webpack_require__(15);
 	var app = express();
 
+	var mongoose = __webpack_require__(16);
+	var Character = __webpack_require__(17);
+	var config = __webpack_require__(18);
+
+	mongoose.connect(config.database);
+	mongoose.connection.on('error', function () {
+	  console.info('Error: Could not connect to MongoDB. Did you forget to run `mongod`?');
+	});
+
 	app.use(compression());
 	app.use(express.static(path.join(__dirname, 'public')));
 	app.get('*', function (req, res) {
@@ -91,6 +100,8 @@
 	app.listen(PORT, function () {
 	  console.log('Production Express server running at localhost:' + PORT);
 	});
+
+	console.log("$$$$$$$$$$$$$$$$$$$$$$$$$$$$$ :\n");
 	/* WEBPACK VAR INJECTION */}.call(exports, ""))
 
 /***/ },
@@ -549,6 +560,45 @@
 /***/ function(module, exports) {
 
 	module.exports = require("compression");
+
+/***/ },
+/* 16 */
+/***/ function(module, exports) {
+
+	module.exports = require("mongoose");
+
+/***/ },
+/* 17 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	var mongoose = __webpack_require__(16);
+
+	var characterSchema = new mongoose.Schema({
+	  characterId: { type: String, unique: true, index: true },
+	  name: String,
+	  race: String,
+	  gender: String,
+	  bloodline: String,
+	  wins: { type: Number, default: 0 },
+	  losses: { type: Number, default: 0 },
+	  reports: { type: Number, default: 0 },
+	  random: { type: [Number], index: '2d' },
+	  voted: { type: Boolean, default: false }
+	});
+
+	module.exports = mongoose.model('Character', characterSchema);
+
+/***/ },
+/* 18 */
+/***/ function(module, exports) {
+
+	'use strict';
+
+	module.exports = {
+	  database: process.env.MONGO_URI || 'localhost/nef'
+	};
 
 /***/ }
 /******/ ]);

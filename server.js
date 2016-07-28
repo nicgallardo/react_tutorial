@@ -9,6 +9,15 @@ var path = require('path')
 var compression = require('compression')
 var app = express()
 
+var mongoose = require('mongoose')
+var Character = require('./models/test')
+var config = require('./config');
+
+mongoose.connect(config.database);
+mongoose.connection.on('error', function() {
+  console.info('Error: Could not connect to MongoDB. Did you forget to run `mongod`?');
+});
+
 app.use(compression())
 app.use(express.static(path.join(__dirname, 'public')))
 app.get('*', (req, res) => {
@@ -42,3 +51,6 @@ var PORT = process.env.PORT || 8080
 app.listen(PORT, function() {
   console.log('Production Express server running at localhost:' + PORT)
 })
+
+
+console.log("$$$$$$$$$$$$$$$$$$$$$$$$$$$$$ :\n")
