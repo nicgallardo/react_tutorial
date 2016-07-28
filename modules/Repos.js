@@ -1,7 +1,12 @@
-// modules/Repos.js
 import React from 'react'
 import { Link } from 'react-router'
 import NavLink from './NavLink'
+import allRoutes from '../data/routes_all'
+import RoutingMethods from '../methods/routing'
+
+let links = RoutingMethods.createLink(allRoutes);
+console.log("links :\n", links)
+
 
 export default React.createClass({
   render() {
