@@ -5,21 +5,50 @@ import { match, RouterContext } from 'react-router'
 import routes from './modules/routes'
 
 var express = require('express')
+var router = require("express").Router();
 var path = require('path')
 var compression = require('compression')
 var app = express()
+var bodyParser = require('body-parser');
 
 var mongoose = require('mongoose')
-var Character = require('./models/test')
+var Testing = require('./models/test')
 var config = require('./config');
 
+var apiController = require("./testing");
+
+
+
 mongoose.connect(config.database);
+// mongoose.connect('mongodb://localhost/myapp');
 mongoose.connection.on('error', function() {
   console.info('Error: Could not connect to MongoDB. Did you forget to run `mongod`?');
 });
 
+app.use(bodyParser.urlencoded({ extended: true }));
+app.use(bodyParser.json());
+
+
 app.use(compression())
+
+app.use('/poster/add/:id', (req, res)=>{
+
+  var testThing = new Testing({
+    name: req.params.id,
+  });
+
+  testThing.save(function(err) {
+    if (err) console.error(err);;
+    console.log("added!!!!!!\n")
+    res.send({ message: ' has been added successfully!' });
+  });
+
+
+})
+
 app.use(express.static(path.join(__dirname, 'public')))
+app.use("/api", apiController);
+
 app.get('*', (req, res) => {
   match({ routes: routes, location: req.url }, (err, redirect, props) => {
     if (err) {
@@ -30,6 +59,7 @@ app.get('*', (req, res) => {
       const appHtml = renderToString(<RouterContext {...props}/>)
       res.send(renderPage(appHtml))
     } else {
+      console.log("req :\n", req.url)
       res.status(404).send('Not Found')
     }
   })
@@ -52,5 +82,3 @@ app.listen(PORT, function() {
   console.log('Production Express server running at localhost:' + PORT)
 })
 
-
-console.log("$$$$$$$$$$$$$$$$$$$$$$$$$$$$$ :\n")

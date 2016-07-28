@@ -62,21 +62,45 @@
 
 	// server.js
 	var express = __webpack_require__(13);
+	var router = __webpack_require__(13).Router();
 	var path = __webpack_require__(14);
 	var compression = __webpack_require__(15);
 	var app = express();
+	var bodyParser = __webpack_require__(16);
 
-	var mongoose = __webpack_require__(16);
-	var Character = __webpack_require__(17);
-	var config = __webpack_require__(18);
+	var mongoose = __webpack_require__(17);
+	var Testing = __webpack_require__(18);
+	var config = __webpack_require__(19);
+
+	var apiController = __webpack_require__(20);
 
 	mongoose.connect(config.database);
+	// mongoose.connect('mongodb://localhost/myapp');
 	mongoose.connection.on('error', function () {
 	  console.info('Error: Could not connect to MongoDB. Did you forget to run `mongod`?');
 	});
 
+	app.use(bodyParser.urlencoded({ extended: true }));
+	app.use(bodyParser.json());
+
 	app.use(compression());
+
+	app.use('/poster/add/:id', function (req, res) {
+
+	  var testThing = new Testing({
+	    name: req.params.id
+	  });
+
+	  testThing.save(function (err) {
+	    if (err) console.error(err);;
+	    console.log("added!!!!!!\n");
+	    res.send({ message: ' has been added successfully!' });
+	  });
+	});
+
 	app.use(express.static(path.join(__dirname, 'public')));
+	app.use("/api", apiController);
+
 	app.get('*', function (req, res) {
 	  (0, _reactRouter.match)({ routes: _routes2.default, location: req.url }, function (err, redirect, props) {
 	    if (err) {
@@ -87,6 +111,7 @@
 	      var appHtml = (0, _server.renderToString)(_react2.default.createElement(_reactRouter.RouterContext, props));
 	      res.send(renderPage(appHtml));
 	    } else {
+	      console.log("req :\n", req.url);
 	      res.status(404).send('Not Found');
 	    }
 	  });
@@ -100,8 +125,6 @@
 	app.listen(PORT, function () {
 	  console.log('Production Express server running at localhost:' + PORT);
 	});
-
-	console.log("$$$$$$$$$$$$$$$$$$$$$$$$$$$$$ :\n");
 	/* WEBPACK VAR INJECTION */}.call(exports, ""))
 
 /***/ },
@@ -565,33 +588,30 @@
 /* 16 */
 /***/ function(module, exports) {
 
-	module.exports = require("mongoose");
+	module.exports = require("body-parser");
 
 /***/ },
 /* 17 */
+/***/ function(module, exports) {
+
+	module.exports = require("mongoose");
+
+/***/ },
+/* 18 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
 
-	var mongoose = __webpack_require__(16);
+	var mongoose = __webpack_require__(17);
 
-	var characterSchema = new mongoose.Schema({
-	  characterId: { type: String, unique: true, index: true },
-	  name: String,
-	  race: String,
-	  gender: String,
-	  bloodline: String,
-	  wins: { type: Number, default: 0 },
-	  losses: { type: Number, default: 0 },
-	  reports: { type: Number, default: 0 },
-	  random: { type: [Number], index: '2d' },
-	  voted: { type: Boolean, default: false }
+	var testing = new mongoose.Schema({
+	  name: String
 	});
 
-	module.exports = mongoose.model('Character', characterSchema);
+	module.exports = mongoose.model('Testing', testing);
 
 /***/ },
-/* 18 */
+/* 19 */
 /***/ function(module, exports) {
 
 	'use strict';
@@ -599,6 +619,33 @@
 	module.exports = {
 	  database: process.env.MONGO_URI || 'localhost/nef'
 	};
+
+/***/ },
+/* 20 */
+/***/ function(module, exports, __webpack_require__) {
+
+	"use strict";
+
+	var router = __webpack_require__(13).Router();
+	router.route("/school/:id?").get(getSchools);
+	router.route("/school/add/:id").post(addSchool);
+	router.route("/school/delete/:id").delete(deleteSchool);
+
+	function getSchools(req, res) {
+	  console.log("ingetSchools :\n");
+	  // console.log("req :\n", req)
+	}
+	function addSchool(req, res) {
+	  console.log("addSchool :\n");
+
+	  // console.log("req :\n", req)
+	}
+	function deleteSchool(req, res) {
+	  // console.log("req :\n", req)
+	  console.log("deleteschol :\n");
+	}
+
+	module.exports = router;
 
 /***/ }
 /******/ ]);
