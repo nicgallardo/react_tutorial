@@ -94,7 +94,7 @@
 	  testThing.save(function (err) {
 	    if (err) console.error(err);;
 	    console.log("added!!!!!!\n");
-	    res.send({ message: ' has been added successfully!' });
+	    res.redirect('/repos');
 	  });
 	});
 

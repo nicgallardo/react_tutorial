@@ -36,13 +36,10 @@ app.use('/poster/add/:id', (req, res)=>{
   var testThing = new Testing({
     name: req.params.id,
   });
-
   testThing.save(function(err) {
     if (err) console.error(err);;
-    console.log("added!!!!!!\n")
-    res.send({ message: ' has been added successfully!' });
+    res.redirect('/repos');
   });
-
 
 })
 
