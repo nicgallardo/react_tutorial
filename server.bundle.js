@@ -67,12 +67,9 @@
 	var compression = __webpack_require__(15);
 	var app = express();
 	var bodyParser = __webpack_require__(16);
-
 	var mongoose = __webpack_require__(17);
 	var Testing = __webpack_require__(18);
 	var config = __webpack_require__(19);
-
-	var apiController = __webpack_require__(20);
 
 	mongoose.connect(config.database);
 	// mongoose.connect('mongodb://localhost/myapp');
@@ -82,24 +79,19 @@
 
 	app.use(bodyParser.urlencoded({ extended: true }));
 	app.use(bodyParser.json());
-
 	app.use(compression());
 
 	app.use('/poster/add/:id', function (req, res) {
-
 	  var testThing = new Testing({
 	    name: req.params.id
 	  });
-
 	  testThing.save(function (err) {
 	    if (err) console.error(err);;
-	    console.log("added!!!!!!\n");
 	    res.redirect('/repos');
 	  });
 	});
 
 	app.use(express.static(path.join(__dirname, 'public')));
-	app.use("/api", apiController);
 
 	app.get('*', function (req, res) {
 	  (0, _reactRouter.match)({ routes: _routes2.default, location: req.url }, function (err, redirect, props) {
@@ -404,14 +396,33 @@
 
 	  handleSubmit: function handleSubmit(event) {
 	    event.preventDefault();
-	    var userName = event.target.elements[0].value;
-	    var repo = event.target.elements[1].value;
-	    var path = '/repos/' + userName + '/' + repo;
-	    console.log(path);
-	    // this.context.router.push(path)
-	    // console.log("this.cotext :\n", this.cotext)
-	    _reactRouter.browserHistory.push(path);
-	    console.log("browserHistory :\n", _reactRouter.browserHistory);
+	    // const userName = event.target.elements[0].value
+	    // const repo = event.target.elements[1].value
+	    // const path = `/repos/${userName}/${repo}`
+	    // console.log(path);
+
+	    // browserHistory.push(path)
+	    // console.log("browserHistory :\n", browserHistory)
+	    var url = "http://gd2.mlb.com/components/game/mlb/year_2016/month_07/day_22/gid_2016_07_22_atlmlb_colmlb_1/boxscore.json";
+	    fetch(url).then(function (r) {
+	      return r.json();
+	    }).then(function (data) {
+	      return console.log(data);
+	    }).catch(function (e) {
+	      return console.log("Booo");
+	    });
+
+	    // let promise = fetch("http://gd2.mlb.com/components/game/mlb/year_2016/month_07/day_22/gid_2016_07_22_atlmlb_colmlb_1/plays.json");
+	    // promise.then(function(resp){
+	    //   console.log(resp)
+	    // })
+	    // .then(function(response) {
+	    //   console.log("response :\n", response.json())
+	    //   // return response.blob();
+	    // })
+	    // .catch(function(error) {
+	    //   console.log('There has been a problem with your fetch operation: ' + error);
+	    // });
 	  },
 	  render: function render() {
 	    return _react2.default.createElement(
@@ -450,10 +461,8 @@
 	          _react2.default.createElement(
 	            'form',
 	            { onSubmit: this.handleSubmit },
-	            _react2.default.createElement('input', { type: 'text', placeholder: 'userName' }),
+	            _react2.default.createElement('input', { type: 'text', placeholder: 'name' }),
 	            ' / ',
-	            ' ',
-	            _react2.default.createElement('input', { type: 'text', placeholder: 'repo' }),
 	            ' ',
 	            _react2.default.createElement(
 	              'button',
@@ -619,33 +628,6 @@
 	module.exports = {
 	  database: process.env.MONGO_URI || 'localhost/nef'
 	};
-
-/***/ },
-/* 20 */
-/***/ function(module, exports, __webpack_require__) {
-
-	"use strict";
-
-	var router = __webpack_require__(13).Router();
-	router.route("/school/:id?").get(getSchools);
-	router.route("/school/add/:id").post(addSchool);
-	router.route("/school/delete/:id").delete(deleteSchool);
-
-	function getSchools(req, res) {
-	  console.log("ingetSchools :\n");
-	  // console.log("req :\n", req)
-	}
-	function addSchool(req, res) {
-	  console.log("addSchool :\n");
-
-	  // console.log("req :\n", req)
-	}
-	function deleteSchool(req, res) {
-	  // console.log("req :\n", req)
-	  console.log("deleteschol :\n");
-	}
-
-	module.exports = router;
 
 /***/ }
 /******/ ]);
